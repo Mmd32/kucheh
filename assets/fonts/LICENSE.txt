@@ -1,0 +1,10 @@
+Vazirmatn font
+==============
+
+The Vazirmatn font family (files in this folder) is by Saber Rastikerdar and
+contributors, distributed under the SIL Open Font License, Version 1.1.
+
+- Home: https://github.com/rastikerdar/vazirmatn
+- License text: https://scripts.sil.org/OFL
+
+The font files are redistributed here unmodified.

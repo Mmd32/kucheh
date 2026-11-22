@@ -1,0 +1,126 @@
+@font-face {
+  font-family: "Vazirmatn";
+  src: url("../fonts/Vazirmatn-Regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Vazirmatn";
+  src: url("../fonts/Vazirmatn-Medium.woff2") format("woff2");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Vazirmatn";
+  src: url("../fonts/Vazirmatn-Bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  color-scheme: light;
+
+  --bg: #f2ebdd;
+  --bg-2: #e9dfcb;
+  --surface: #fffdf7;
+  --surface-2: #f7f1e3;
+  --surface-3: #ece1cd;
+  --ink: #201b14;
+  --ink-soft: #6c5f4b;
+  --ink-faint: #7d6f59;
+  --line: #e4dac5;
+  --line-strong: #cdbc9c;
+
+  --accent: #0e6b5b;
+  --accent-ink: #ffffff;
+  --accent-soft: #dbeae3;
+  --danger: #a83d2b;
+  --danger-soft: #f7e2db;
+  --brass: #8f6524;
+  --brass-soft: #f3e7cd;
+  --gold: #c08a2e;
+
+  --p1: #0e6b5b;
+  --p1-soft: #dbeae3;
+  --p2: #b4552f;
+  --p2-soft: #f6e3d8;
+  --p3: #a87a22;
+  --p3-soft: #f4e9ce;
+  --p4: #3d5f8a;
+  --p4-soft: #e1e7f1;
+
+  --board-light: #f3e8cf;
+  --board-dark: #2f6b52;
+  --board-line: #4f3a24;
+
+  --felt: #0f5b45;
+  --felt-dark: #08392c;
+  --felt-light: #1a7a5c;
+  --wood: #6b4426;
+  --wood-dark: #42280f;
+  --wood-light: #9b6a3a;
+  --asphalt: #2a2d31;
+  --asphalt-dark: #1b1e21;
+
+  --radius-lg: 22px;
+  --radius: 15px;
+  --radius-sm: 11px;
+
+  --shadow-sm: 0 1px 1px rgba(41, 31, 18, 0.12), 0 2px 4px -1px rgba(41, 31, 18, 0.08);
+  --shadow: 0 2px 4px rgba(41, 31, 18, 0.08), 0 14px 28px -14px rgba(41, 31, 18, 0.32);
+  --shadow-lg: 0 34px 60px -28px rgba(41, 31, 18, 0.45), 0 6px 12px -6px rgba(41, 31, 18, 0.22);
+  --inset-top: inset 0 1px 0 rgba(255, 255, 255, 0.55);
+
+  --font: "Vazirmatn", "SF Arabic", -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, sans-serif;
+  --mono: ui-monospace, "SF Mono", Menlo, monospace;
+
+  --page: 1020px;
+  --board-scale: 1;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --bg: #14150f;
+  --bg-2: #0d0e0a;
+  --surface: #1e201a;
+  --surface-2: #262921;
+  --surface-3: #30342a;
+  --ink: #f1ebdd;
+  --ink-soft: #b0a892;
+  --ink-faint: #a49c88;
+  --line: #34382c;
+  --line-strong: #4a4f3e;
+
+  --accent: #4fc0a6;
+  --accent-ink: #062019;
+  --accent-soft: #173a31;
+  --danger: #e0806a;
+  --danger-soft: #37211c;
+  --brass: #d6ab61;
+  --brass-soft: #332913;
+  --gold: #e0b054;
+
+  --p1: #4fc0a6;
+  --p1-soft: #173a31;
+  --p2: #e0806a;
+  --p2-soft: #37211c;
+  --p3: #d6ab61;
+  --p3-soft: #332913;
+  --p4: #8fa9d8;
+  --p4-soft: #1e2739;
+
+  --board-light: #6a624e;
+  --board-dark: #2c5a45;
+  --board-line: #22190f;
+
+  --shadow-sm: 0 1px 1px rgba(0, 0, 0, 0.35), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
+  --shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 14px 28px -14px rgba(0, 0, 0, 0.7);
+  --shadow-lg: 0 34px 60px -24px rgba(0, 0, 0, 0.8);
+  --inset-top: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
