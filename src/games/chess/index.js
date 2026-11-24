@@ -129,33 +129,49 @@ export default {
       };
       const byWhite = missing('b');
       const byBlack = missing('w');
-      if (!byWhite.length && !byBlack.length) {
-        capturedEl.replaceChildren(h('span', { class: 'small faint', text: 'هنوز مهره‌ای گرفته نشده.' }));
-        return;
-      }
       const value = { p: 1, n: 3, b: 3, r: 5, q: 9 };
       const material =
         byWhite.reduce((sum, type) => sum + value[type], 0) - byBlack.reduce((sum, type) => sum + value[type], 0);
 
-      const row = (label, list, color, showBalance) =>
+      const name = (color) => {
+        if (mode === 'local') return color === 'w' ? 'سفید' : 'سیاه';
+        return color === 'w' ? 'تو' : 'کامپیوتر';
+      };
+
+      const row = (color, captured, imageColor, balance) =>
         h(
           'div',
-          { class: 'capt-row' },
-          h('span', { class: 'capt-label', text: label }),
-          ...list.map((type) =>
-            h('img', {
-              class: 'piece-img is-mini',
-              src: `assets/pieces/${color}${type.toUpperCase()}.svg`,
-              alt: '',
-              draggable: 'false',
-            }),
-          ),
-          showBalance && material !== 0
-            ? h('span', { class: 'chip chip-accent', text: `مزیت: ${material > 0 ? '+' : ''}${faNum(material)}` })
+          {
+            class: `chess-player ${!over && state.turn === color ? 'is-turn' : ''}`.trim(),
+            title: `${name(color)}${balance ? ' — مزیت مواد' : ''}`,
+          },
+          h('span', { class: `dot dot-${color === 'w' ? 'w' : 'b'}` }),
+          h('span', { text: name(color) }),
+          balance && material !== 0
+            ? h('span', { class: 'chip chip-accent', text: `${material > 0 ? '+' : ''}${faNum(material)}` })
             : null,
+          h(
+            'span',
+            { class: 'cap-list' },
+            ...captured.map((type) =>
+              h('img', {
+                src: `assets/pieces/${imageColor}${type.toUpperCase()}.svg`,
+                alt: '',
+                draggable: 'false',
+              }),
+            ),
+          ),
         );
 
-      capturedEl.replaceChildren(row('گرفته‌های تو', byWhite, 'b', true), row('گرفته‌های حریف', byBlack, 'w', false));
+      const topColor = flipped ? 'w' : 'b';
+      const bottomColor = flipped ? 'b' : 'w';
+      const capturedBy = (color) => (color === 'w' ? byWhite : byBlack);
+      const imageFor = (color) => (color === 'w' ? 'b' : 'w');
+      const advantage = (color) => (color === 'w' ? material : -material);
+      capturedEl.replaceChildren(
+        row(topColor, capturedBy(topColor), imageFor(topColor), advantage(topColor) > 0),
+        row(bottomColor, capturedBy(bottomColor), imageFor(bottomColor), advantage(bottomColor) > 0),
+      );
     }
 
     function paint() {
@@ -180,17 +196,20 @@ export default {
         const isBottomRow = flipped ? r === 0 : r === 7;
         const isEdgeCol = flipped ? c === 7 : c === 0;
 
+        const coords = [];
+        if (isBottomRow) coords.push(h('span', { class: 'coord coord-file', 'aria-hidden': 'true', text: 'abcdefgh'[c] }));
+        if (isEdgeCol) coords.push(h('span', { class: 'coord coord-rank', 'aria-hidden': 'true', text: String(8 - r) }));
+
         const cell = h(
           'button',
           {
             type: 'button',
             class: cls.join(' '),
             role: 'gridcell',
-            'data-file': isBottomRow ? 'abcdefgh'[c] : null,
-            'data-rank': isEdgeCol ? String(8 - r) : null,
             'aria-label': `${squareName(i)}${piece ? `، ${piece}` : '، خالی'}${i === checkSq ? '، شاه در کیش' : ''}`,
             onClick: () => onSquare(i),
           },
+          ...coords,
           piece
             ? h('img', {
                 class: 'piece-img',
@@ -221,6 +240,7 @@ export default {
         );
       }
       if (!rows.length) rows.push(h('li', { class: 'small faint', text: 'هنوز حرکتی انجام نشده.' }));
+      if (rows.length) rows[rows.length - 1].classList.add('is-current');
       movesEl.replaceChildren(...rows);
       const list = movesEl.parentElement;
       if (list) list.scrollTop = list.scrollHeight;
@@ -434,13 +454,20 @@ export default {
         h(
           'div',
           { class: 'game-body chess-layout' },
-          h('div', { class: 'chess-board-wrap' }, boardEl),
+          h('div', { class: 'chess-main' }, statusEl, h('div', { class: 'chess-board-wrap' }, boardEl)),
           h(
             'div',
             { class: 'chess-side' },
-            statusEl,
             capturedEl,
             h('div', { class: 'panel chess-moves-panel' }, h('div', { class: 'panel-title', text: 'حرکات' }), movesEl),
+            h(
+              'div',
+              { class: 'panel chess-legend' },
+              h('div', { class: 'panel-title', text: 'راهنمای صفحه' }),
+              h('div', { class: 'legend-row' }, h('span', { class: 'legend-swatch is-target' }), 'حرکت مجاز'),
+              h('div', { class: 'legend-row' }, h('span', { class: 'legend-swatch is-capture' }), 'گرفتن مهره'),
+              h('div', { class: 'legend-row' }, h('span', { class: 'legend-swatch is-check' }), 'شاه در کیش'),
+            ),
           ),
         ),
       ),

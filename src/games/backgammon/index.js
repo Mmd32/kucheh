@@ -339,6 +339,16 @@ export default {
           }
         }
 
+        svg.append(
+          s('text', {
+            x: g.center,
+            y: g.dir === 1 ? BOARD_TOP + 11 : BOARD_BOTTOM - 5,
+            class: `bg-point-label ${index % 2 === 0 ? 'on-light' : 'on-dark'}`,
+            'text-anchor': 'middle',
+            text: faNum(index + 1),
+          }),
+        );
+
         const hit = s('rect', {
           x: g.x0,
           y: g.dir === 1 ? BOARD_TOP : CENTER_Y,

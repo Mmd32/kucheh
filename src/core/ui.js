@@ -20,8 +20,15 @@ function applyProps(el, props) {
         Object.assign(el.dataset, value);
         break;
       case 'style':
-        if (typeof value === 'string') el.style.cssText = value;
-        else Object.assign(el.style, value);
+        if (typeof value === 'string') {
+          el.style.cssText = value;
+        } else {
+          for (const [prop, val] of Object.entries(value)) {
+            if (val == null) continue;
+            if (prop.startsWith('--')) el.style.setProperty(prop, String(val));
+            else el.style[prop] = val;
+          }
+        }
         break;
       case 'value':
         el.value = value;

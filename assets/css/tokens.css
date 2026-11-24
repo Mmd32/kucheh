@@ -22,105 +22,208 @@
   font-display: swap;
 }
 
+/* ============================================================
+   توکن‌های طراحی «کوچه» — تنها منبع رنگ، تایپ، فاصله و حرکت
+   ============================================================ */
+
 :root {
   color-scheme: light;
 
-  --bg: #f2ebdd;
-  --bg-2: #e9dfcb;
-  --surface: #fffdf7;
-  --surface-2: #f7f1e3;
-  --surface-3: #ece1cd;
-  --ink: #201b14;
-  --ink-soft: #6c5f4b;
-  --ink-faint: #7d6f59;
-  --line: #e4dac5;
-  --line-strong: #cdbc9c;
+  /* paper & ink */
+  --paper: #f1e9db;
+  --paper-2: #e8ddc9;
+  --paper-3: #ded1b8;
+  --surface: #fffcf5;
+  --surface-2: #f8f2e5;
+  --surface-3: #eee4d2;
+  --ink: #191510;
+  --ink-2: #574c3c;
+  --ink-3: #7f7159;
+  --line: rgba(25, 21, 16, 0.13);
+  --line-2: rgba(25, 21, 16, 0.22);
+  --line-strong: #cbb99a;
 
-  --accent: #0e6b5b;
+  /* brand */
+  --accent: #0d6a58;
   --accent-ink: #ffffff;
-  --accent-soft: #dbeae3;
-  --danger: #a83d2b;
-  --danger-soft: #f7e2db;
-  --brass: #8f6524;
-  --brass-soft: #f3e7cd;
-  --gold: #c08a2e;
+  --accent-soft: #dcebe4;
+  --accent-2: #0a5446;
+  --danger: #a5372a;
+  --danger-soft: #f7e2dc;
+  --brass: #8a6120;
+  --brass-2: #c9a25c;
+  --brass-soft: #f4e8cd;
 
-  --p1: #0e6b5b;
-  --p1-soft: #dbeae3;
-  --p2: #b4552f;
-  --p2-soft: #f6e3d8;
-  --p3: #a87a22;
-  --p3-soft: #f4e9ce;
-  --p4: #3d5f8a;
-  --p4-soft: #e1e7f1;
+  /* seats */
+  --p1: #0d6a58;
+  --p1-soft: #dcebe4;
+  --p2: #b4522c;
+  --p2-soft: #f7e3d9;
+  --p3: #9c7418;
+  --p3-soft: #f5ead0;
+  --p4: #365a86;
+  --p4-soft: #e2e8f2;
 
-  --board-light: #f3e8cf;
-  --board-dark: #2f6b52;
-  --board-line: #4f3a24;
+  /* materials */
+  --wood-1: #7d5232;
+  --wood-2: #5a3a1d;
+  --wood-3: #3a2311;
+  --wood-edge: rgba(255, 232, 196, 0.24);
+  --felt-1: #15725a;
+  --felt-2: #0b4d3c;
+  --felt-3: #07362a;
+  --felt-ink: #f4efdf;
+  --board-light: #efdcb8;
+  --board-dark: #b8835a;
+  --board-edge: #2a1b0d;
+  --paper-cell: #fffdf7;
+  --paper-cell-2: #f6efdf;
+  --neon-1: #0d2a22;
+  --neon-2: #061713;
+  --neon-ink: #7ef2d4;
+  --neon-food: #ff6b4a;
 
-  --felt: #0f5b45;
-  --felt-dark: #08392c;
-  --felt-light: #1a7a5c;
-  --wood: #6b4426;
-  --wood-dark: #42280f;
-  --wood-light: #9b6a3a;
-  --asphalt: #2a2d31;
-  --asphalt-dark: #1b1e21;
+  /* cards */
+  --card-face: #fffdf7;
+  --card-ink: #1a1712;
+  --card-red: #ae2b1c;
+  --card-back-1: #12604d;
+  --card-back-2: #083328;
+  --card-w: 62px;
+  --card-h: 88px;
 
-  --radius-lg: 22px;
-  --radius: 15px;
-  --radius-sm: 11px;
-
-  --shadow-sm: 0 1px 1px rgba(41, 31, 18, 0.12), 0 2px 4px -1px rgba(41, 31, 18, 0.08);
-  --shadow: 0 2px 4px rgba(41, 31, 18, 0.08), 0 14px 28px -14px rgba(41, 31, 18, 0.32);
-  --shadow-lg: 0 34px 60px -28px rgba(41, 31, 18, 0.45), 0 6px 12px -6px rgba(41, 31, 18, 0.22);
-  --inset-top: inset 0 1px 0 rgba(255, 255, 255, 0.55);
-
+  /* typography */
   --font: "Vazirmatn", "SF Arabic", -apple-system, BlinkMacSystemFont, "Segoe UI", Tahoma, sans-serif;
   --mono: ui-monospace, "SF Mono", Menlo, monospace;
+  --fs-1: 11.5px;
+  --fs-2: 12.5px;
+  --fs-3: 13.5px;
+  --fs-4: 15px;
+  --fs-5: 17px;
+  --fs-6: 20px;
+  --fs-7: 26px;
+  --fs-8: 34px;
+  --fs-9: 52px;
+  --lh-tight: 1.25;
+  --lh-body: 1.75;
 
-  --page: 1020px;
+  /* spacing / radius / elevation */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 22px;
+  --sp-6: 30px;
+  --sp-7: 42px;
+  --sp-8: 60px;
+
+  --r-1: 4px;
+  --r-2: 8px;
+  --r-3: 12px;
+  --r-4: 18px;
+  --r-5: 26px;
+  --r-pill: 999px;
+
+  --el-1: 0 1px 1px rgba(35, 26, 14, 0.06), 0 1px 3px rgba(35, 26, 14, 0.05);
+  --el-2: 0 2px 4px rgba(35, 26, 14, 0.06), 0 8px 18px -12px rgba(35, 26, 14, 0.35);
+  --el-3: 0 4px 8px rgba(35, 26, 14, 0.07), 0 20px 36px -22px rgba(35, 26, 14, 0.42);
+  --el-4: 0 40px 70px -32px rgba(35, 26, 14, 0.5), 0 8px 16px -10px rgba(35, 26, 14, 0.3);
+  --inset-hi: inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  --inset-lo: inset 0 -2px 0 rgba(60, 40, 15, 0.14);
+
+  /* motion */
+  --t-fast: 120ms;
+  --t-mid: 200ms;
+  --t-slow: 320ms;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  --page: 1040px;
   --board-scale: 1;
+
+  /* aliases still used by structural CSS */
+  --bg: var(--paper);
+  --bg-2: var(--paper-2);
+  --ink-soft: var(--ink-2);
+  --ink-faint: var(--ink-3);
+  --gold: var(--brass-2);
+  --shadow-sm: var(--el-1);
+  --shadow: var(--el-2);
+  --shadow-lg: var(--el-4);
+  --inset-top: var(--inset-hi);
+  --radius-lg: var(--r-5);
+  --radius: var(--r-4);
+  --radius-sm: var(--r-3);
+  --board-line: var(--wood-3);
+  --felt: var(--felt-2);
+  --felt-dark: var(--felt-3);
+  --felt-light: var(--felt-1);
+  --wood: var(--wood-1);
+  --wood-dark: var(--wood-3);
+  --wood-light: var(--wood-2);
+  --asphalt: #23262a;
+  --asphalt-dark: #14171a;
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  --bg: #14150f;
-  --bg-2: #0d0e0a;
-  --surface: #1e201a;
-  --surface-2: #262921;
-  --surface-3: #30342a;
-  --ink: #f1ebdd;
-  --ink-soft: #b0a892;
-  --ink-faint: #a49c88;
-  --line: #34382c;
-  --line-strong: #4a4f3e;
+  --paper: #14140f;
+  --paper-2: #0d0e0a;
+  --paper-3: #24241c;
+  --surface: #1d1e17;
+  --surface-2: #25261e;
+  --surface-3: #2f3026;
+  --ink: #f2ecdd;
+  --ink-2: #bcb39e;
+  --ink-3: #968d78;
+  --line: rgba(242, 236, 221, 0.14);
+  --line-2: rgba(242, 236, 221, 0.24);
+  --line-strong: #4a4b3d;
 
-  --accent: #4fc0a6;
-  --accent-ink: #062019;
-  --accent-soft: #173a31;
-  --danger: #e0806a;
-  --danger-soft: #37211c;
-  --brass: #d6ab61;
-  --brass-soft: #332913;
-  --gold: #e0b054;
+  --accent: #4fc2a6;
+  --accent-ink: #06150f;
+  --accent-soft: #163a31;
+  --accent-2: #6fd8bc;
+  --danger: #e07f68;
+  --danger-soft: #38211c;
+  --brass: #dcb573;
+  --brass-2: #f0cf94;
+  --brass-soft: #322813;
 
-  --p1: #4fc0a6;
-  --p1-soft: #173a31;
-  --p2: #e0806a;
-  --p2-soft: #37211c;
-  --p3: #d6ab61;
-  --p3-soft: #332913;
-  --p4: #8fa9d8;
-  --p4-soft: #1e2739;
+  --p1: #4fc2a6;
+  --p1-soft: #163a31;
+  --p2: #e08560;
+  --p2-soft: #38221a;
+  --p3: #dcb573;
+  --p3-soft: #322813;
+  --p4: #8ba8d8;
+  --p4-soft: #1c2536;
 
-  --board-light: #6a624e;
-  --board-dark: #2c5a45;
-  --board-line: #22190f;
+  --wood-1: #4a3320;
+  --wood-2: #33220f;
+  --wood-3: #1d1207;
+  --wood-edge: rgba(255, 226, 180, 0.16);
+  --felt-1: #14614b;
+  --felt-2: #0a4133;
+  --felt-3: #052a21;
+  --board-light: #6f6551;
+  --board-dark: #3c5c4a;
+  --board-edge: #100b05;
+  --paper-cell: #23241c;
+  --paper-cell-2: #1b1c15;
+  --neon-ink: #7ef2d4;
 
-  --shadow-sm: 0 1px 1px rgba(0, 0, 0, 0.35), 0 2px 4px -1px rgba(0, 0, 0, 0.3);
-  --shadow: 0 2px 4px rgba(0, 0, 0, 0.3), 0 14px 28px -14px rgba(0, 0, 0, 0.7);
-  --shadow-lg: 0 34px 60px -24px rgba(0, 0, 0, 0.8);
-  --inset-top: inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  --card-face: #f7f2e4;
+  --card-ink: #191510;
+  --card-red: #b03322;
+  --card-back-1: #145c49;
+  --card-back-2: #072c23;
+
+  --el-1: 0 1px 1px rgba(0, 0, 0, 0.4), 0 1px 3px rgba(0, 0, 0, 0.3);
+  --el-2: 0 2px 4px rgba(0, 0, 0, 0.35), 0 8px 18px -12px rgba(0, 0, 0, 0.7);
+  --el-3: 0 4px 10px rgba(0, 0, 0, 0.4), 0 22px 40px -24px rgba(0, 0, 0, 0.8);
+  --el-4: 0 40px 70px -30px rgba(0, 0, 0, 0.85), 0 8px 18px -10px rgba(0, 0, 0, 0.6);
+  --inset-hi: inset 0 1px 0 rgba(255, 255, 255, 0.07);
+  --inset-lo: inset 0 -2px 0 rgba(0, 0, 0, 0.35);
 }

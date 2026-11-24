@@ -1,0 +1,2183 @@
+/* ============================================================
+   تخته‌ها و متریال‌های کوچه
+   چوب و نمد · کاغذ · میز کارت · نئون
+   ============================================================ */
+
+/* ---------- material helpers ---------- */
+
+.m-wood {
+  background:
+    linear-gradient(168deg, var(--wood-1) 0%, var(--wood-2) 55%, var(--wood-3) 100%);
+  border: 1px solid var(--wood-3);
+  box-shadow: var(--el-3), inset 0 2px 0 var(--wood-edge), inset 0 -6px 14px rgba(0, 0, 0, 0.4);
+}
+
+.m-felt {
+  background: radial-gradient(130% 100% at 40% 8%, var(--felt-1), var(--felt-2) 62%, var(--felt-3));
+  border: 1px solid #05241c;
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.05), var(--el-3);
+}
+
+/* board width helpers (respect the user's board scale) */
+
+.chess-board-wrap { --bw: 560px; }
+.manch-wrap { --bw: 660px; }
+.snakes-wrap { --bw: 640px; }
+.ms-grid { --bw: 600px; }
+.sudoku-board { --bw: 520px; }
+.pipe-grid { --bw: 600px; }
+.park-board-wrap { --bw: 420px; }
+.snakes-wrap,
+.manch-wrap {
+  padding: var(--sp-3);
+}
+
+.chess-board-wrap,
+.manch-wrap,
+.snakes-wrap,
+.ms-grid,
+.sudoku-board,
+.pipe-grid,
+.park-board-wrap {
+  width: min(100%, calc(var(--bw) * var(--board-scale, 1)));
+  margin-inline: auto;
+}
+
+/* ============================================================
+   شطرنج — تخت و خوانا مثل lichess
+   ============================================================ */
+
+.chess-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 236px;
+  gap: var(--sp-4);
+  align-items: start;
+}
+
+@media (max-width: 840px) {
+  .chess-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chess-board-wrap {
+  padding: 10px;
+  border-radius: var(--r-4);
+  background: linear-gradient(165deg, #6f4a2a, #4a2f16 62%, var(--wood-3));
+  box-shadow: var(--el-4), inset 0 1px 0 rgba(255, 232, 196, 0.2);
+  position: relative;
+}
+
+.chess-board-wrap::after {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  border-radius: var(--r-3);
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.35);
+  pointer-events: none;
+}
+
+.chess-board {
+  display: grid;
+  grid-template-columns: repeat(8, 1fr);
+  grid-template-rows: repeat(8, 1fr);
+  direction: ltr;
+  aspect-ratio: 1;
+  border-radius: 3px;
+  overflow: hidden;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+.chess-sq {
+  position: relative;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border-radius: 0;
+  aspect-ratio: 1;
+  line-height: 1;
+  transition: background-color var(--t-fast) var(--ease);
+}
+
+.chess-sq.is-light {
+  background: var(--board-light);
+}
+
+.chess-sq.is-dark {
+  background: var(--board-dark);
+}
+
+.chess-sq.is-last {
+  background-image: linear-gradient(rgba(206, 178, 78, 0.5), rgba(206, 178, 78, 0.5));
+}
+
+.chess-sq.is-selected {
+  background-image: linear-gradient(rgba(206, 178, 78, 0.72), rgba(206, 178, 78, 0.72));
+}
+
+.chess-sq.is-target::after {
+  content: "";
+  position: absolute;
+  width: 28%;
+  height: 28%;
+  border-radius: 50%;
+  background: rgba(28, 92, 72, 0.55);
+  box-shadow: 0 0 0 1.5px rgba(255, 251, 238, 0.75);
+}
+
+.chess-sq.is-capture::after {
+  content: "";
+  position: absolute;
+  inset: 6%;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 4px rgba(168, 55, 42, 0.62);
+}
+
+.chess-sq.is-check {
+  background-image: radial-gradient(circle at 50% 45%, rgba(200, 40, 26, 0.85), rgba(200, 40, 26, 0.15) 56%, transparent 72%);
+}
+
+.chess-sq[data-file]::before,
+.chess-sq[data-rank]::before {
+  content: none;
+}
+
+.chess-coord {
+  position: absolute;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.chess-coord.is-file {
+  inset-inline-start: 3px;
+  bottom: 2px;
+}
+
+.chess-coord.is-rank {
+  inset-inline-end: 3px;
+  top: 2px;
+}
+
+.chess-sq.is-light .chess-coord {
+  color: color-mix(in srgb, var(--board-dark) 85%, #3d260c);
+}
+
+.chess-sq.is-dark .chess-coord {
+  color: color-mix(in srgb, var(--board-light) 88%, #ffffff);
+}
+
+.piece-img {
+  width: 88%;
+  height: 88%;
+  object-fit: contain;
+  position: relative;
+  z-index: 1;
+  pointer-events: none;
+  filter: drop-shadow(0 2px 1.5px rgba(0, 0, 0, 0.28));
+}
+
+.piece-img.is-mini {
+  width: 20px;
+  height: 20px;
+  filter: none;
+}
+
+.chess-side {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.chess-players {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.chess-player {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 36px;
+  padding: 4px 9px;
+  border-radius: var(--r-2);
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  font-size: var(--fs-2);
+  color: var(--ink-2);
+  transition: border-color var(--t-mid) var(--ease), background var(--t-mid) var(--ease);
+}
+
+.chess-player.is-turn {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 14%, transparent);
+  color: var(--ink);
+}
+
+.chess-player .dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.chess-player .dot-w {
+  background: #fffdf7;
+  border: 1px solid #7b6a4c;
+}
+
+.chess-player .dot-b {
+  background: #1d1a15;
+}
+
+.chess-player .cap-list {
+  margin-inline-start: auto;
+  display: flex;
+  gap: 1px;
+  align-items: center;
+  flex-wrap: wrap;
+  min-height: 16px;
+}
+
+.chess-player .cap-list img {
+  width: 15px;
+  height: 15px;
+  filter: none;
+  opacity: 0.9;
+}
+
+.chess-moves-panel {
+  border-radius: var(--r-3);
+  padding: 10px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.move-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  font-variant-numeric: tabular-nums;
+}
+
+.move-row {
+  display: grid;
+  grid-template-columns: 26px 1fr 1fr;
+  gap: 4px;
+  padding: 3px 5px;
+  border-radius: var(--r-1);
+  font-size: var(--fs-2);
+}
+
+.move-row:nth-child(odd) {
+  background: color-mix(in srgb, var(--surface-2) 65%, transparent);
+}
+
+.move-row.is-current {
+  background: color-mix(in srgb, var(--accent-soft) 70%, transparent);
+}
+
+.move-no {
+  color: var(--ink-3);
+}
+
+.move-san {
+  direction: ltr;
+  text-align: left;
+  font-family: var(--mono);
+  font-size: 11.5px;
+}
+
+/* ============================================================
+   تخته نرد — چوب و نمد
+   ============================================================ */
+
+.bg-wrap {
+  position: relative;
+  max-width: min(100%, calc(840px * var(--board-scale, 1)));
+  margin-inline: auto;
+  border-radius: var(--r-5);
+  box-shadow: var(--el-4);
+}
+
+.bg-board {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: var(--r-5);
+}
+
+.bg-seam {
+  stroke: rgba(0, 0, 0, 0.42);
+  stroke-width: 2;
+}
+
+.bg-hinge {
+  fill: var(--brass-2);
+  stroke: #573914;
+  stroke-width: 1.5;
+}
+
+.bg-bar {
+  fill: url(#bgWood);
+  stroke: rgba(201, 162, 92, 0.5);
+  stroke-width: 1.5;
+}
+
+.bg-point-a {
+  fill: #eadfc5;
+}
+
+.bg-point-b {
+  fill: #c1502a;
+}
+
+.bg-point-home {
+  fill-opacity: 0.98;
+}
+
+.bg-point-selected {
+  fill: rgba(255, 246, 214, 0.42);
+}
+
+.bg-point-target {
+  fill: rgba(255, 246, 214, 0.26);
+  stroke: rgba(255, 246, 214, 0.75);
+  stroke-width: 2;
+}
+
+.bg-checker {
+  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.38));
+  stroke-width: 2;
+}
+
+.bg-checker-w {
+  fill: url(#bgIvory);
+  stroke: #7c5a33;
+}
+
+.bg-checker-b {
+  fill: url(#bgEbony);
+  stroke: #a8875a;
+}
+
+.bg-count {
+  fill: #fdf6e3;
+  stroke: #8e6a37;
+  stroke-width: 1.4;
+}
+
+.bg-count-text {
+  fill: #3a2b16;
+  font-weight: 700;
+}
+
+.bg-off {
+  fill: rgba(0, 0, 0, 0.34);
+  stroke: rgba(201, 162, 92, 0.55);
+  stroke-width: 1.2;
+}
+
+.bg-off-w {
+  fill: rgba(238, 224, 198, 0.16);
+}
+
+.bg-off-b {
+  fill: rgba(12, 9, 5, 0.45);
+}
+
+.bg-off-label {
+  fill: #fdf6e3;
+  font-size: 10.5px;
+  font-weight: 600;
+}
+
+.bg-tray-dot {
+  stroke: rgba(0, 0, 0, 0.35);
+  stroke-width: 1;
+}
+
+.bg-tray-dot-w {
+  fill: #efe2c6;
+}
+
+.bg-tray-dot-b {
+  fill: #2a2018;
+}
+
+.bg-point-label {
+  fill: rgba(253, 246, 227, 0.6);
+  font-size: 8.5px;
+  font-weight: 600;
+}
+
+.bg-hit {
+  fill: transparent;
+  cursor: pointer;
+  outline: none;
+}
+
+.bg-hit:hover {
+  fill: rgba(255, 246, 214, 0.1);
+}
+
+.bg-hit:focus-visible {
+  stroke: var(--brass-2);
+  stroke-width: 2;
+}
+
+.bg-dice-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  padding-bottom: 1%;
+}
+
+.bg-dice-plate {
+  display: flex;
+  gap: var(--sp-2);
+  padding: 9px 11px;
+  border-radius: var(--r-3);
+  background: rgba(8, 24, 18, 0.52);
+  border: 1px solid rgba(201, 162, 92, 0.6);
+  box-shadow: var(--el-3);
+  backdrop-filter: blur(3px);
+}
+
+.bg-dice-plate .die {
+  --size: 46px;
+}
+
+.bg-dice-overlay.is-rolling .die {
+  animation: dice-toss 480ms var(--ease-out);
+}
+
+@keyframes dice-toss {
+  0% {
+    transform: translateY(-46px) rotate(-64deg) scale(0.72);
+    opacity: 0.2;
+  }
+  58% {
+    transform: translateY(5px) rotate(18deg) scale(1.05);
+    opacity: 1;
+  }
+  82% {
+    transform: translateY(-2px) rotate(-6deg) scale(1);
+  }
+  100% {
+    transform: translateY(0) rotate(0) scale(1);
+  }
+}
+
+@media (max-width: 700px) {
+  .bg-off-label,
+  .bg-count-text,
+  .bg-bar-label {
+    font-size: 13px;
+  }
+}
+
+/* ============================================================
+   منچ
+   ============================================================ */
+
+.manch-wrap {
+  border-radius: var(--r-5);
+  background: linear-gradient(160deg, color-mix(in srgb, var(--surface) 80%, transparent), var(--surface-3));
+  box-shadow: var(--el-3), var(--inset-hi);
+}
+
+.manch-board {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.mring-cell {
+  fill: var(--paper-cell);
+  stroke: var(--line-strong);
+  stroke-width: 1.1;
+  filter: drop-shadow(0 1px 1px rgba(60, 40, 15, 0.22));
+}
+
+.mring-cell.is-safe {
+  fill: var(--surface-3);
+}
+
+.mring-cell.is-start.m-p1 { fill: var(--p1-soft); stroke: var(--p1); }
+.mring-cell.is-start.m-p2 { fill: var(--p2-soft); stroke: var(--p2); }
+.mring-cell.is-start.m-p3 { fill: var(--p3-soft); stroke: var(--p3); }
+.mring-cell.is-start.m-p4 { fill: var(--p4-soft); stroke: var(--p4); }
+
+.mhome-cell {
+  fill: var(--surface-2);
+  stroke: var(--line-strong);
+  stroke-width: 1;
+}
+
+.mhome-cell.m-p1 { fill: var(--p1-soft); }
+.mhome-cell.m-p2 { fill: var(--p2-soft); }
+.mhome-cell.m-p3 { fill: var(--p3-soft); }
+.mhome-cell.m-p4 { fill: var(--p4-soft); }
+
+.myard {
+  fill: var(--surface-2);
+  stroke-width: 2.5;
+}
+
+.myard.m-p1 { fill: var(--p1-soft); stroke: var(--p1); }
+.myard.m-p2 { fill: var(--p2-soft); stroke: var(--p2); }
+.myard.m-p3 { fill: var(--p3-soft); stroke: var(--p3); }
+.myard.m-p4 { fill: var(--p4-soft); stroke: var(--p4); }
+
+.myard-label {
+  fill: var(--ink-3);
+  font-size: 12px;
+}
+
+.mgoal {
+  fill: var(--surface-3);
+  stroke: var(--line-strong);
+  stroke-width: 2;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.16));
+}
+
+.mgoal-text {
+  fill: var(--ink-2);
+  font-size: 10px;
+}
+
+.mtoken {
+  stroke: var(--surface);
+  stroke-width: 2.5;
+  filter: drop-shadow(0 2px 3px rgba(40, 25, 10, 0.34));
+}
+
+.mtoken.m-p1 { fill: var(--p1); }
+.mtoken.m-p2 { fill: var(--p2); }
+.mtoken.m-p3 { fill: var(--p3); }
+.mtoken.m-p4 { fill: var(--p4); }
+
+.mtoken.is-selectable {
+  cursor: pointer;
+  stroke-width: 3;
+}
+
+.mtoken.is-selectable:hover {
+  opacity: 0.86;
+}
+
+/* ============================================================
+   مار و پله — کاغذ بازی
+   ============================================================ */
+
+.snakes-wrap {
+  border-radius: var(--r-4);
+  background: linear-gradient(160deg, var(--surface), var(--surface-3));
+  border: 1px solid var(--line);
+  box-shadow: var(--el-3), var(--inset-hi);
+}
+
+.snakes-board {
+  position: relative;
+  aspect-ratio: 1;
+  direction: ltr;
+  border-radius: var(--r-2);
+  overflow: hidden;
+  box-shadow: inset 0 0 0 1px var(--line-2);
+}
+
+.snakes-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  grid-template-rows: repeat(10, 1fr);
+  gap: 1px;
+  height: 100%;
+  background: var(--line);
+}
+
+.snake-cell {
+  display: flex;
+  align-items: flex-start;
+  justify-content: flex-end;
+  padding: 2px 3px;
+  background: var(--paper-cell);
+  border-radius: 0;
+  min-width: 0;
+}
+
+.snakes-grid .snake-cell:nth-child(even) {
+  background: var(--paper-cell-2);
+}
+
+.snake-cell.is-ladder {
+  background: color-mix(in srgb, var(--accent-soft) 85%, var(--paper-cell));
+}
+
+.snake-cell.is-snake {
+  background: color-mix(in srgb, var(--danger-soft) 85%, var(--paper-cell));
+}
+
+.snake-num {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--ink-3);
+  line-height: 1.2;
+}
+
+.snakes-overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.ladder-rail {
+  stroke: var(--accent);
+  stroke-width: 0.075;
+  stroke-linecap: round;
+  opacity: 0.9;
+}
+
+.ladder-rung {
+  stroke: var(--accent);
+  stroke-width: 0.05;
+  opacity: 0.8;
+}
+
+.snake-body {
+  fill: none;
+  stroke: var(--p2);
+  stroke-width: 0.15;
+  stroke-linecap: round;
+  opacity: 0.78;
+}
+
+.snake-head {
+  fill: var(--p2);
+}
+
+.snakes-tokens {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.snake-token {
+  position: absolute;
+  width: 8%;
+  height: 8%;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid var(--surface);
+  box-shadow: 0 3px 6px rgba(40, 25, 10, 0.4);
+}
+
+.token-p1 { background: var(--p1); }
+.token-p2 { background: var(--p2); }
+.token-p3 { background: var(--p3); }
+.token-p4 { background: var(--p4); }
+
+.snakes-start {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 2px 0;
+}
+
+.snake-token-tray {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  display: inline-block;
+  border: 2px solid var(--surface);
+  box-shadow: var(--el-1);
+}
+
+/* ============================================================
+   دوز
+   ============================================================ */
+
+.ttt-board {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  width: min(100%, calc(360px * var(--board-scale, 1)));
+  aspect-ratio: 1;
+  padding: 12px;
+  margin-inline: auto;
+  border-radius: var(--r-4);
+  background: linear-gradient(160deg, #6f4a2a, #4a2f16 60%, var(--wood-3));
+  box-shadow: var(--el-4), inset 0 1px 0 rgba(255, 232, 196, 0.2);
+}
+
+.ttt-cell {
+  display: grid;
+  place-items: center;
+  border-radius: var(--r-2);
+  background: linear-gradient(165deg, var(--board-light), color-mix(in srgb, var(--board-light) 72%, #c8a877));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.6), inset 0 -3px 6px rgba(90, 60, 25, 0.18);
+  font-size: clamp(34px, 11vw, 52px);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ink);
+  transition: background var(--t-fast) var(--ease), box-shadow var(--t-fast) var(--ease);
+}
+
+.ttt-cell:hover:not(:disabled) {
+  background: linear-gradient(165deg, #fff8e8, #f3e4c8);
+}
+
+.ttt-cell.is-x {
+  color: var(--p1);
+}
+
+.ttt-cell.is-o {
+  color: var(--p2);
+}
+
+.ttt-cell.is-win {
+  box-shadow: inset 0 0 0 3px var(--brass-2), 0 0 18px rgba(201, 162, 92, 0.55);
+}
+
+/* ============================================================
+   نقطه‌بازی
+   ============================================================ */
+
+.dots-wrap {
+  width: min(100%, calc(560px * var(--board-scale, 1)));
+  margin-inline: auto;
+  padding: 14px;
+  border-radius: var(--r-4);
+  background: linear-gradient(160deg, var(--surface), var(--surface-2));
+  border: 1px solid var(--line);
+  box-shadow: var(--el-3), var(--inset-hi);
+}
+
+.dots-board {
+  display: block;
+  width: 100%;
+  height: auto;
+  touch-action: manipulation;
+}
+
+.dot-point {
+  fill: var(--wood-2);
+}
+
+.dot-line {
+  stroke-width: 5.5;
+  stroke-linecap: round;
+}
+
+.dot-line-1 { stroke: var(--p1); }
+.dot-line-2 { stroke: var(--p2); }
+
+.dot-box { fill: color-mix(in srgb, var(--p1) 14%, transparent); }
+.dot-box-2 { fill: color-mix(in srgb, var(--p2) 15%, transparent); }
+
+.edge-hit {
+  stroke: transparent;
+  stroke-width: 20;
+  cursor: pointer;
+  outline: none;
+}
+
+.edge-hit:hover,
+.edge-hit:focus-visible {
+  stroke: color-mix(in srgb, var(--brass-2) 35%, transparent);
+}
+
+/* ============================================================
+   مین‌روب
+   ============================================================ */
+
+.ms-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 9), 1fr);
+  gap: 3px;
+  padding: 10px;
+  border-radius: var(--r-4);
+  background: linear-gradient(160deg, #6f4a2a, #4a2f16 60%, var(--wood-3));
+  box-shadow: var(--el-4), inset 0 1px 0 rgba(255, 232, 196, 0.2);
+}
+
+.ms-cell {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  min-width: 0;
+  padding: 0;
+  border-radius: var(--r-1);
+  background: linear-gradient(180deg, color-mix(in srgb, var(--board-light) 92%, #fff), var(--board-light));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.7), inset 0 -2px 0 rgba(90, 65, 30, 0.22);
+  color: var(--ink-2);
+  font-size: clamp(11px, 2.6vw, 16px);
+  font-weight: 700;
+  transition: background var(--t-fast) var(--ease);
+}
+
+.ms-cell:hover:not(.is-open) {
+  background: linear-gradient(180deg, #fff6e4, #f0dfbe);
+}
+
+.ms-cell.is-open {
+  background: var(--paper-cell);
+  box-shadow: inset 0 0 0 1px var(--line);
+  cursor: default;
+}
+
+.ms-cell.is-flag {
+  background: linear-gradient(180deg, #1f8a72, var(--accent-2));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.28), inset 0 -2px 0 rgba(0, 0, 0, 0.25);
+}
+
+.ms-flag::before {
+  content: "⚑";
+  color: #ffe7ae;
+  font-size: 1.05em;
+}
+
+.ms-cell.is-exploded {
+  background: linear-gradient(180deg, #c94a34, #8f2412);
+}
+
+.ms-cell.is-mine {
+  background: var(--danger-soft);
+}
+
+.ms-mine {
+  display: block;
+  width: 44%;
+  height: 44%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #55452f, #171009 70%);
+}
+
+.ms-cell.n1 { color: #2359a8; }
+.ms-cell.n2 { color: #1f7a4d; }
+.ms-cell.n3 { color: #ad3524; }
+.ms-cell.n4 { color: #5d3487; }
+.ms-cell.n5 { color: #8a5a10; }
+.ms-cell.n6 { color: #0c6353; }
+.ms-cell.n7 { color: #2c2318; }
+.ms-cell.n8 { color: #62563f; }
+
+:root[data-theme="dark"] .ms-cell.n1 { color: #8bb4ff; }
+:root[data-theme="dark"] .ms-cell.n2 { color: #7ddcb0; }
+:root[data-theme="dark"] .ms-cell.n3 { color: #ff9a86; }
+:root[data-theme="dark"] .ms-cell.n4 { color: #c9a6f0; }
+:root[data-theme="dark"] .ms-cell.n5 { color: #e8c37a; }
+:root[data-theme="dark"] .ms-cell.n6 { color: #7ee0cd; }
+:root[data-theme="dark"] .ms-cell.n7 { color: #e7dcc8; }
+:root[data-theme="dark"] .ms-cell.n8 { color: #bdb29c; }
+
+/* ============================================================
+   لوله‌کشی
+   ============================================================ */
+
+.pipe-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 6), 1fr);
+  gap: 6px;
+  padding: 12px;
+  border-radius: var(--r-4);
+  background: linear-gradient(160deg, #2b3838, #16201f);
+  box-shadow: var(--el-4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.pipe-cell {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  min-width: 0;
+  padding: 5px;
+  border-radius: var(--r-2);
+  background: linear-gradient(160deg, #303d3d, #1d2726);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), inset 0 -2px 5px rgba(0, 0, 0, 0.4);
+  transition: background var(--t-fast) var(--ease);
+}
+
+.pipe-cell.is-water {
+  background: linear-gradient(160deg, #123f38, #0a2b26);
+}
+
+.pipe-cell.is-source {
+  box-shadow: inset 0 0 0 2px var(--brass-2), var(--el-2);
+}
+
+.pipe-svg {
+  width: 100%;
+  height: 100%;
+}
+
+.pipe-line {
+  stroke: #c8a76f;
+  stroke-width: 15;
+  stroke-linecap: round;
+  filter: drop-shadow(0 1px 1px rgba(0, 0, 0, 0.55));
+}
+
+.pipe-hub {
+  fill: #e2c58c;
+}
+
+.pipe-cap {
+  fill: var(--brass-2);
+  stroke: #221607;
+  stroke-width: 1.8;
+}
+
+.pipe-svg.is-water .pipe-line {
+  stroke: var(--neon-ink);
+  filter: drop-shadow(0 0 7px rgba(126, 242, 212, 0.55));
+}
+
+.pipe-svg.is-water .pipe-hub {
+  fill: #b6fff0;
+}
+
+.pipe-tap {
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 18px;
+  border-radius: 6px;
+  background: linear-gradient(180deg, #f2d9a5, var(--brass-2));
+  color: #2a1c08;
+  box-shadow: var(--el-1);
+  z-index: 2;
+}
+
+.pipe-tap svg {
+  width: 13px;
+  height: 13px;
+}
+
+.pipe-steps {
+  display: grid;
+  gap: 6px;
+  max-width: 640px;
+  margin-inline: auto;
+}
+
+.pipe-step {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  padding: 8px 11px;
+  border-radius: var(--r-3);
+  border: 1px solid var(--line);
+  background: color-mix(in srgb, var(--surface) 75%, transparent);
+  font-size: var(--fs-2);
+  color: var(--ink-2);
+}
+
+.pipe-step b {
+  display: inline-grid;
+  place-items: center;
+  width: 21px;
+  height: 21px;
+  flex: none;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-size: 11px;
+}
+
+.pipe-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.legend-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-inline-end: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.legend-water { background: var(--neon-ink); }
+.legend-dry { background: #46524c; }
+.legend-cap { background: var(--brass-2); }
+
+/* ============================================================
+   پارکینگ
+   ============================================================ */
+
+.park-stage {
+  display: flex;
+  justify-content: center;
+  direction: ltr;
+}
+
+.park-board-wrap {
+  position: relative;
+  direction: ltr;
+}
+
+.park-board {
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(6, 1fr);
+  gap: 2px;
+  width: 100%;
+  aspect-ratio: 1;
+  padding: 8px;
+  border-radius: var(--r-4);
+  background: linear-gradient(160deg, #3a3e44, #1f2226);
+  box-shadow: var(--el-4), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+
+.park-cell {
+  min-width: 0;
+  border-radius: 4px;
+  border: 1px dashed rgba(255, 255, 255, 0.13);
+  background: transparent;
+}
+
+.park-cell:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.park-car {
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  margin: 1px;
+  min-width: 0;
+  border-radius: 9px;
+  border: 2px solid transparent;
+  background: linear-gradient(180deg, #8ba7dc, #3d5f8a 68%, #27405e);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 -3px 6px rgba(0, 0, 0, 0.3), 0 4px 8px rgba(0, 0, 0, 0.35);
+  color: #fff;
+  font-size: 11px;
+  z-index: 2;
+}
+
+.park-car::after {
+  content: "";
+  position: absolute;
+  inset: 26% 16%;
+  border-radius: 5px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.06));
+  pointer-events: none;
+}
+
+.park-car.is-red {
+  background: linear-gradient(180deg, #e2684b, #a8321f 68%, #771d11);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.35), inset 0 -3px 6px rgba(0, 0, 0, 0.32), 0 4px 10px rgba(0, 0, 0, 0.42);
+}
+
+.park-car.is-selected {
+  border-color: var(--brass-2);
+  box-shadow: 0 0 0 2px var(--brass-2), 0 6px 14px rgba(0, 0, 0, 0.45);
+}
+
+.park-exit {
+  position: absolute;
+  right: -28px;
+  top: 43%;
+  transform: translateY(-50%);
+  writing-mode: vertical-rl;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--brass);
+}
+
+.park-arrows {
+  display: flex;
+  gap: 6px;
+  justify-content: center;
+  direction: ltr;
+}
+
+/* ============================================================
+   مار بازی — نئون
+   ============================================================ */
+
+.snake-layout {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--sp-3);
+}
+
+.snake-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 17), 1fr);
+  width: min(100%, calc(500px * var(--board-scale, 1))); 
+  aspect-ratio: 1;
+  gap: 1px;
+  padding: 8px;
+  border-radius: var(--r-4);
+  background: radial-gradient(120% 100% at 50% 0%, var(--neon-1), var(--neon-2));
+  box-shadow: var(--el-4), inset 0 0 0 1px rgba(126, 242, 212, 0.08);
+  direction: ltr;
+}
+
+.snake-cell {
+  min-width: 0;
+  border-radius: 2px;
+  background: rgba(126, 242, 212, 0.045);
+}
+
+.snake-cell.is-body {
+  background: linear-gradient(180deg, #5ef0cd, #0f9a7c 70%, #0a7a62);
+  box-shadow: 0 0 6px rgba(94, 240, 205, 0.45);
+}
+
+.snake-cell.is-head {
+  background: radial-gradient(circle at 40% 32%, #c3fff2, #14a98a 60%, #0b7a63);
+  box-shadow: 0 0 10px rgba(126, 242, 212, 0.7);
+}
+
+.snake-cell.is-food {
+  background: radial-gradient(circle at 35% 30%, #ff9a7d, var(--neon-food) 62%, #a32a12);
+  box-shadow: 0 0 12px rgba(255, 107, 74, 0.6);
+  border-radius: 50%;
+  transform: scale(0.82);
+}
+
+.snake-cell.is-wall {
+  background: linear-gradient(180deg, #3a4a44, #1c2724);
+  box-shadow: inset 0 0 0 1px rgba(126, 242, 212, 0.18);
+}
+
+.snake-dpad {
+  display: grid;
+  grid-template-columns: repeat(3, 52px);
+  grid-template-rows: repeat(2, 44px);
+  gap: 6px;
+  justify-content: center;
+}
+
+.snake-dir {
+  border-radius: var(--r-2);
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  font-size: var(--fs-4);
+  box-shadow: var(--el-1);
+}
+
+.snake-dir:nth-child(1) { grid-column: 2; grid-row: 1; }
+.snake-dir:nth-child(2) { grid-column: 1; grid-row: 2; }
+.snake-dir:nth-child(3) { grid-column: 2; grid-row: 2; }
+.snake-dir:nth-child(4) { grid-column: 3; grid-row: 2; }
+
+.snake-dir:active {
+  background: var(--accent-soft);
+}
+
+/* ============================================================
+   بیلیارد
+   ============================================================ */
+
+.billiard-wrap {
+  width: 100%;
+  max-width: min(100%, calc(900px * var(--board-scale, 1)));
+  margin-inline: auto;
+}
+
+.billiard-canvas {
+  display: block;
+  width: 100%;
+  aspect-ratio: 2 / 1;
+  border-radius: var(--r-4);
+  box-shadow: var(--el-4), inset 0 0 0 1px rgba(255, 255, 255, 0.06);
+  touch-action: none;
+  cursor: crosshair;
+  background: var(--felt-2);
+}
+
+.power-bar {
+  height: 8px;
+  max-width: 420px;
+  margin-inline: auto;
+  border-radius: var(--r-pill);
+  border: 1px solid var(--line);
+  background: linear-gradient(180deg, var(--surface-3), var(--surface-2));
+  overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.12);
+}
+
+.power-fill {
+  height: 100%;
+  width: 0;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), var(--brass-2));
+  transition: width 80ms linear;
+}
+
+.billiard-keys {
+  justify-content: center;
+}
+
+/* ============================================================
+   میز کارت
+   ============================================================ */
+
+.hokm-table,
+.cb-table,
+.bj-table {
+  padding: var(--sp-4);
+  border-radius: var(--r-5);
+  background: radial-gradient(120% 90% at 50% 0%, var(--felt-1), var(--felt-2) 68%, var(--felt-3));
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.07), var(--el-4);
+}
+
+.hokm-table {
+  display: grid;
+  gap: 10px;
+}
+
+.hokm-seat,
+.cb-seat,
+.bj-player,
+.bj-dealer {
+  border-radius: var(--r-3);
+  border: 1px solid rgba(0, 0, 0, 0.22);
+  background: linear-gradient(180deg, #fffdf7, #f6eedd);
+  box-shadow: 0 8px 16px -12px rgba(0, 0, 0, 0.65);
+  padding: 8px 10px;
+}
+
+.hokm-seat.is-active,
+.cb-seat.is-active,
+.bj-player.is-active {
+  border-color: var(--brass-2);
+  box-shadow: 0 0 0 2px var(--brass-2), 0 10px 18px -12px rgba(0, 0, 0, 0.6);
+}
+
+.hokm-name,
+.cb-name,
+.bj-name,
+.bj-label {
+  color: #2a2114;
+  font-size: var(--fs-2);
+  font-weight: 700;
+}
+
+.hokm-name .chip,
+.cb-name .chip,
+.bj-player-head .chip {
+  background: rgba(20, 40, 30, 0.08);
+  border-color: rgba(20, 40, 30, 0.16);
+  color: #4d4433;
+}
+
+.hokm-hand,
+.cb-hand,
+.bj-hand {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  min-height: 8px;
+  justify-content: center;
+}
+
+.hokm-hand .pcard,
+.cb-hand .pcard,
+.bj-hand .pcard {
+  animation: card-deal var(--t-slow) var(--ease-out) backwards;
+}
+
+.hokm-hand .pcard:nth-child(2) { animation-delay: 24ms; }
+.hokm-hand .pcard:nth-child(3) { animation-delay: 48ms; }
+.hokm-hand .pcard:nth-child(4) { animation-delay: 72ms; }
+.hokm-hand .pcard:nth-child(5) { animation-delay: 96ms; }
+.hokm-hand .pcard:nth-child(n + 6) { animation-delay: 120ms; }
+
+.hokm-middle {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 8px;
+  align-items: center;
+}
+
+@media (max-width: 660px) {
+  .hokm-middle {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hokm-trick {
+  min-height: 116px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  padding: 8px;
+  border-radius: var(--r-3);
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(250, 244, 228, 0.72);
+}
+
+.hokm-trick .small,
+.hokm-trick .muted {
+  color: rgba(250, 244, 228, 0.7);
+}
+
+.hokm-trick-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+}
+
+.cb-table {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cb-opponents {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+@media (max-width: 720px) {
+  .cb-opponents {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cb-seat {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.cb-market {
+  padding: 10px;
+  border-radius: var(--r-3);
+  background: rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.cb-market-title {
+  margin-bottom: 6px;
+  color: rgba(250, 244, 228, 0.75);
+  font-weight: 600;
+}
+
+.cb-market-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+
+.bj-table {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.bj-dealer {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+
+.bj-players {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 10px;
+}
+
+.bj-player {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bj-player-head {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+
+.bj-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.bj-controls .chip {
+  background: rgba(255, 253, 247, 0.92);
+  border-color: rgba(0, 0, 0, 0.16);
+  color: #3a3122;
+}
+
+/* ============================================================
+   سودوکو و جدول — کاغذ
+   ============================================================ */
+
+.sudoku-board {
+  display: grid;
+  grid-template-columns: repeat(9, 1fr);
+  direction: ltr;
+  gap: 1px;
+  padding: 3px;
+  border: 2px solid var(--board-edge);
+  border-radius: var(--r-2);
+  background: var(--board-edge);
+  box-shadow: var(--el-3), inset 0 1px 0 rgba(255, 232, 196, 0.2);
+}
+
+.sudoku-cell {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  background: var(--paper-cell);
+  font-size: clamp(15px, 3.8vw, 21px);
+  transition: background var(--t-fast) var(--ease);
+}
+
+.sudoku-cell.box-right {
+  border-right: 2px solid var(--board-edge);
+}
+
+.sudoku-cell.box-bottom {
+  border-bottom: 2px solid var(--board-edge);
+}
+
+.sudoku-cell.is-peer {
+  background: var(--paper-cell-2);
+}
+
+.sudoku-cell.is-selected {
+  background: color-mix(in srgb, var(--accent-soft) 90%, var(--paper-cell));
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+.sudoku-value {
+  color: var(--ink);
+  line-height: 1;
+  font-weight: 500;
+}
+
+.sudoku-cell.is-given .sudoku-value {
+  font-weight: 700;
+  color: var(--ink);
+}
+
+.sudoku-cell.is-same .sudoku-value {
+  color: var(--accent);
+  font-weight: 700;
+}
+
+.sudoku-cell.is-wrong .sudoku-value {
+  color: var(--danger);
+}
+
+.sudoku-notes {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  width: 100%;
+  height: 100%;
+  padding: 1px;
+  font-size: 8px;
+  line-height: 1;
+}
+
+.note {
+  display: grid;
+  place-items: center;
+  color: var(--ink-3);
+}
+
+.sudoku-pad {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  max-width: 520px;
+  margin-inline: auto;
+}
+
+.pad-key {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--r-2);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  font-size: var(--fs-5);
+  font-weight: 600;
+  box-shadow: var(--el-1);
+}
+
+.pad-key:hover {
+  background: var(--surface-2);
+}
+
+.pad-erase,
+.pad-notes {
+  width: auto;
+  padding: 0 12px;
+  font-size: var(--fs-2);
+}
+
+.pad-notes.is-on {
+  background: linear-gradient(180deg, #12806a, var(--accent-2));
+  border-color: #084d40;
+  color: var(--accent-ink);
+}
+
+.xw-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: var(--sp-4);
+  align-items: start;
+}
+
+@media (max-width: 800px) {
+  .xw-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.xw-board {
+  display: grid;
+  grid-template-columns: repeat(var(--cols, 5), 1fr);
+  gap: 2px;
+  width: min(100%, calc(420px * var(--board-scale, 1)));
+  margin-inline: auto;
+  padding: 8px;
+  border-radius: var(--r-3);
+  background: linear-gradient(160deg, #6f4a2a, #4a2f16 60%, var(--wood-3));
+  box-shadow: var(--el-4), inset 0 1px 0 rgba(255, 232, 196, 0.18);
+  direction: ltr;
+}
+
+.xw-cell {
+  position: relative;
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 1px solid var(--line-strong);
+  border-radius: 2px;
+  background: var(--paper-cell);
+  font-size: clamp(14px, 3.4vw, 20px);
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.xw-cell.is-black {
+  background: var(--board-edge);
+  border-color: var(--board-edge);
+  cursor: default;
+}
+
+.xw-cell.is-active {
+  background: var(--paper-cell-2);
+}
+
+.xw-cell.is-selected {
+  background: color-mix(in srgb, var(--accent-soft) 90%, var(--paper-cell));
+  box-shadow: inset 0 0 0 2px var(--accent);
+}
+
+.xw-cell.is-wrong .xw-letter {
+  color: var(--danger);
+}
+
+.xw-num {
+  position: absolute;
+  top: 1px;
+  left: 2px;
+  font-size: 8px;
+  font-weight: 700;
+  color: var(--ink-3);
+  line-height: 1;
+}
+
+.xw-clues {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-3);
+}
+
+@media (max-width: 430px) {
+  .xw-clues {
+    grid-template-columns: 1fr;
+  }
+}
+
+.xw-clue-group {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.xw-clue-title {
+  font-size: var(--fs-2);
+  font-weight: 700;
+  color: var(--ink-2);
+}
+
+.xw-clue {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  padding: 5px 6px;
+  border-radius: var(--r-1);
+  text-align: start;
+  font-size: var(--fs-2);
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+.xw-clue:hover {
+  background: var(--surface-2);
+}
+
+.xw-clue.is-active {
+  background: var(--accent-soft);
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+.xw-clue.is-wrong {
+  color: var(--danger);
+}
+
+.xw-clue-num {
+  color: var(--ink-3);
+  font-weight: 700;
+}
+
+.xw-clue-len {
+  margin-inline-start: auto;
+  font-size: var(--fs-1);
+  color: var(--ink-3);
+}
+
+.xw-pad {
+  grid-column: 1 / -1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(40px, 1fr));
+  gap: 4px;
+  width: 100%;
+  max-width: 660px;
+  margin-inline: auto;
+}
+
+.xw-key {
+  min-height: 38px;
+  border-radius: var(--r-2);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  font-size: var(--fs-4);
+  box-shadow: var(--el-1);
+}
+
+.xw-key:hover {
+  background: var(--surface-2);
+}
+
+.xw-key-wide {
+  grid-column: span 2;
+  font-size: var(--fs-2);
+}
+
+/* ============================================================
+   هنگ‌من — تخته‌سیاه
+   ============================================================ */
+
+.hangman-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 220px) minmax(0, 1fr);
+  gap: var(--sp-4);
+  align-items: start;
+}
+
+@media (max-width: 640px) {
+  .hangman-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+.hangman-slot {
+  padding: 12px;
+  border-radius: var(--r-4);
+  background: radial-gradient(120% 100% at 40% 0%, #1d3a31, #0d211c 70%, #07120f);
+  border: 1px solid #05201a;
+  box-shadow: var(--el-3), inset 0 0 0 1px rgba(255, 255, 255, 0.05);
+}
+
+.hangman-draw {
+  width: 100%;
+  height: auto;
+}
+
+.hm-line {
+  stroke: #eef4ea;
+  stroke-width: 6;
+  stroke-linecap: round;
+  fill: none;
+  opacity: 0.92;
+}
+
+.hangman-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-3);
+}
+
+.hangman-word {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.hangman-letter {
+  display: grid;
+  place-items: center;
+  min-width: 34px;
+  height: 46px;
+  border-bottom: 3px solid var(--brass-2);
+  font-size: var(--fs-6);
+  font-weight: 700;
+  line-height: 1;
+  color: var(--ink);
+}
+
+.hangman-letter.is-hidden {
+  color: color-mix(in srgb, var(--brass) 70%, var(--ink-3));
+}
+
+.hangman-letter.is-space {
+  min-width: 10px;
+  border-bottom-color: transparent;
+}
+
+.hangman-wrong {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+}
+
+.hangman-keys {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  justify-content: center;
+}
+
+.key {
+  width: 36px;
+  height: 38px;
+  border-radius: var(--r-2);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  font-size: var(--fs-4);
+  box-shadow: var(--el-1);
+  transition: background var(--t-fast) var(--ease), color var(--t-fast) var(--ease);
+}
+
+.key:hover:not(:disabled) {
+  background: var(--surface-2);
+}
+
+.key.is-correct {
+  background: linear-gradient(180deg, #1a8f78, var(--accent-2));
+  border-color: #084d40;
+  color: #fffdf4;
+}
+
+.key.is-wrong {
+  background: var(--danger-soft);
+  border-color: color-mix(in srgb, var(--danger) 35%, transparent);
+  color: var(--danger);
+  text-decoration: line-through;
+}
+
+/* ============================================================
+   نبرد دریایی — رادار کاغذی
+   ============================================================ */
+
+.bs-grids {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--sp-4);
+  align-items: start;
+}
+
+@media (max-width: 620px) {
+  .bs-grids {
+    grid-template-columns: 1fr;
+    gap: var(--sp-4);
+  }
+}
+
+.bs-side {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.bs-side-title {
+  font-weight: 700;
+  font-size: var(--fs-2);
+  color: var(--ink-2);
+}
+
+.bs-grid {
+  display: grid;
+  grid-template-columns: repeat(10, 1fr);
+  gap: 2px;
+  padding: 8px;
+  border-radius: var(--r-3);
+  background: linear-gradient(160deg, #24323b, #172229);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.06), var(--el-2);
+  direction: ltr;
+}
+
+.bs-cell {
+  display: grid;
+  place-items: center;
+  aspect-ratio: 1;
+  min-width: 0;
+  padding: 0;
+  border-radius: 3px;
+  border: 1px solid rgba(126, 242, 212, 0.16);
+  background: rgba(126, 242, 212, 0.1);
+  transition: background var(--t-fast) var(--ease);
+}
+
+.bs-cell:hover {
+  background: rgba(126, 242, 212, 0.22);
+}
+
+.bs-side-enemy .bs-cell {
+  border-color: rgba(255, 140, 110, 0.18);
+  background: rgba(255, 140, 110, 0.1);
+}
+
+.bs-side-enemy .bs-cell:hover {
+  background: rgba(255, 140, 110, 0.22);
+}
+
+.bs-cell.is-ship {
+  background: rgba(240, 236, 220, 0.5);
+}
+
+.bs-cell.is-hit {
+  background: var(--danger);
+  border-color: var(--danger);
+  color: #fff;
+}
+
+.bs-cell.is-miss {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.bs-mark {
+  font-size: clamp(7px, 1.9vw, 12px);
+  line-height: 1;
+}
+
+.bs-ship-dot {
+  width: 26%;
+  height: 26%;
+  border-radius: 50%;
+  background: var(--accent);
+  opacity: 0.75;
+}
+
+.bs-setup {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.bs-setup .chip {
+  height: 26px;
+  font-size: var(--fs-2);
+  padding: 0 10px;
+}
+
+/* ============================================================
+   app-level tweaks & small screens
+   ============================================================ */
+
+@media (max-width: 560px) {
+  .bg-dice-plate .die {
+    --size: 38px;
+  }
+  .game-bar {
+    padding: 6px;
+  }
+  .chess-player .cap-list img {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+:root[data-motion="reduced"] .bg-dice-overlay .die,
+:root[data-motion="reduced"] .hokm-hand .pcard,
+:root[data-motion="reduced"] .cb-hand .pcard,
+:root[data-motion="reduced"] .bj-hand .pcard {
+  animation: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hokm-hand .pcard,
+  .cb-hand .pcard,
+  .bj-hand .pcard,
+  .bg-dice-overlay .die {
+    animation: none !important;
+  }
+}
+
+/* touch / selection hygiene for boards */
+
+.chess-board,
+.ttt-board,
+.ms-grid,
+.pipe-grid,
+.park-board,
+.snake-grid,
+.dots-board,
+.bg-board,
+.manch-board,
+.xw-board,
+.sudoku-board,
+.bs-grid,
+.hokm-hand,
+.cb-hand,
+.bj-hand {
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+}
+
+/* ============================================================
+   شطرنج: مختصات واقعی و نوار بازیکن
+   ============================================================ */
+
+.chess-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  min-width: 0;
+}
+
+.chess-sq .coord {
+  position: absolute;
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.chess-sq .coord-file {
+  left: 3px;
+  bottom: 2px;
+}
+
+.chess-sq .coord-rank {
+  right: 3px;
+  top: 2px;
+}
+
+.chess-sq.is-light .coord {
+  color: color-mix(in srgb, var(--board-dark) 88%, #3b2410);
+}
+
+.chess-sq.is-dark .coord {
+  color: color-mix(in srgb, var(--board-light) 94%, #fff);
+}
+
+.chess-sq .piece-img ~ .coord {
+  z-index: 2;
+}
+
+/* نوار بازیکن: نه شبیه ورودی، بلکه یک ردیف آرام */
+.chess-player {
+  padding: 6px 9px;
+  border-radius: var(--r-2);
+  background: var(--surface);
+  font-size: var(--fs-2);
+  gap: 7px;
+}
+
+.chess-player.is-turn {
+  border-color: var(--line);
+  box-shadow: inset 3px 0 0 0 var(--accent);
+  background: color-mix(in srgb, var(--accent-soft) 45%, var(--surface));
+  color: var(--ink);
+}
+
+.chess-player .cap-list {
+  margin-inline-start: auto;
+  min-height: 16px;
+  max-width: 60%;
+  overflow: hidden;
+}
+
+.chess-player .cap-list:empty::after {
+  content: "";
+  display: block;
+  width: 0;
+}
+
+.chess-side {
+  position: sticky;
+  top: 82px;
+}
+
+/* ---------- chess legend ---------- */
+
+.chess-legend {
+  padding: 10px;
+  border-radius: var(--r-3);
+  display: grid;
+  gap: 6px;
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: var(--fs-2);
+  color: var(--ink-2);
+}
+
+.legend-swatch {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  flex: none;
+  border: 1px solid var(--line-2);
+}
+
+.legend-swatch.is-target {
+  background: rgba(28, 92, 72, 0.55);
+  box-shadow: 0 0 0 1.5px rgba(255, 251, 238, 0.75);
+}
+
+.legend-swatch.is-capture {
+  box-shadow: inset 0 0 0 3px rgba(168, 55, 42, 0.62);
+}
+
+.legend-swatch.is-check {
+  background: radial-gradient(circle at 50% 45%, rgba(200, 40, 26, 0.9), rgba(200, 40, 26, 0.12) 78%);
+}
+
+/* ---------- dice pips: size from the die, not the grid ---------- */
+
+.die {
+  --pip: calc(var(--size, 44px) * 0.155);
+}
+
+.pip {
+  width: var(--pip);
+  height: var(--pip);
+  border-radius: 50%;
+}
+
+/* ---------- chess player rows ---------- */
+
+.chess-player {
+  gap: 7px;
+}
+
+.chess-player .dot-w {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #fffdf7;
+  box-shadow: inset 0 0 0 1px #8a7550, 0 1px 1px rgba(0, 0, 0, 0.15);
+}
+
+.chess-player .dot-b {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background: #211d16;
+  box-shadow: inset 0 1px 1px rgba(255, 255, 255, 0.25);
+}
+
+.chess-player .cap-list {
+  margin-inline-start: 0;
+  gap: 0;
+}
+
+.chess-player .chip {
+  margin-inline-start: auto;
+}
+
+/* ---------- backgammon point numbers ---------- */
+
+.bg-point-label {
+  font-size: 10px;
+  font-weight: 700;
+  pointer-events: none;
+}
+
+.bg-point-label.on-light {
+  fill: rgba(120, 60, 24, 0.75);
+}
+
+.bg-point-label.on-dark {
+  fill: rgba(255, 246, 226, 0.85);
+}
+
+/* ---------- cards: pip density ---------- */
+
+.pcard .pips {
+  inset: 21% 25% 17%;
+  font-size: 11px;
+  align-content: space-between;
+  row-gap: 1px;
+}
+
+.pcard.is-small .pips {
+  inset: 23% 27% 17%;
+  font-size: 7.5px;
+}
+
+@media (max-width: 600px) {
+  .chess-board-wrap {
+    --bw: 460px;
+  }
+}

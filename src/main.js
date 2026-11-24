@@ -147,10 +147,32 @@ function makeCard(game, save, stat) {
   );
 }
 
+const GROUP_TITLES = {
+  board: 'تخته و میز',
+  cards: 'کارتی',
+  puzzle: 'معما و فکر',
+  arcade: 'آرکید و مهارت',
+  party: 'تیمی و مهمانی',
+};
+
 function renderHome() {
   const saves = listSaves();
   const cards = games.map((game) => makeCard(game, saves[game.id], getStat(game.id)));
-  const grid = h('div', { class: 'cards' }, cards);
+  const byCategory = new Map();
+  games.forEach((game, index) => {
+    const key = categoryOf(game.id);
+    if (!byCategory.has(key)) byCategory.set(key, []);
+    byCategory.get(key).push(cards[index]);
+  });
+  const groups = [...byCategory.entries()].map(([key, list]) =>
+    h(
+      'section',
+      { class: `card-group cat-${key}` },
+      h('h3', { class: 'card-group-title' }, h('span', { class: 'card-group-dot' }), GROUP_TITLES[key] || key),
+      h('div', { class: 'cards', style: { '--cols': String(Math.min(4, list.length)) } }, ...list),
+    ),
+  );
+  const grid = h('div', { class: 'card-groups' }, ...groups);
   const empty = h('p', { class: 'muted center small', text: 'بازی‌ای با این نام پیدا نشد.', hidden: true });
   const countChip = h('span', { class: 'chip', text: `${faNum(games.length)} بازی` });
 
@@ -170,6 +192,9 @@ function renderHome() {
       const match = !q || haystack.includes(q);
       card.hidden = !match;
       if (match) shown += 1;
+    });
+    groups.forEach((section) => {
+      section.hidden = !section.querySelector('.card:not([hidden])');
     });
     empty.hidden = shown > 0;
     countChip.textContent = `${faNum(shown)} از ${faNum(games.length)} بازی`;
